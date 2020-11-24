@@ -1,0 +1,69 @@
+package TestJson;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class JsonTest {
+
+public static void main(String[] args) throws IOException {
+// TODO Auto-generated method stub
+URL url = null;
+try {
+url = new URL(
+"https://samples.openweathermap.org/data/2.5/forecast/hourly?q=London,us&appid=b6907d289e10d714a6e88b30761fae22");
+} catch (MalformedURLException e1) {
+// TODO Auto-generated catch block
+e1.printStackTrace();
+}
+HttpURLConnection con = (HttpURLConnection) url.openConnection();
+int responseCode = con.getResponseCode();
+System.out.println("\nSending 'GET' request to URL : " + url);
+System.out.println("Response Code : " + responseCode);
+BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+response.append(inputLine);
+}
+in.close();
+// print in String
+System.out.println(response.toString());
+
+JSONObject jobj = new JSONObject(response.toString());
+
+JSONArray jsonarr_1 = (JSONArray) jobj.get("list");
+for (int i = 0; i < jsonarr_1.length(); i++) {
+
+JSONObject jsonobj_1 = (JSONObject) jsonarr_1.get(i);
+JSONArray jsonarr_2 = (JSONArray) jsonobj_1.get("weather");
+
+// System.out.println("weather contains: " + jsonobj_1.get("weather"));
+
+for (int j = 0; j < jsonarr_2.length(); j++) {
+
+JSONObject jsonobj_2 = (JSONObject) jsonarr_2.get(j);
+
+int id = (int) jsonobj_2.get("id");
+if (id == 500) {
+System.out.println("weather contains: " + jsonobj_1.get("weather"));
+String description = (String) jsonobj_2.get("description");
+System.out.println(" Id is 500 so descrpiton is :" + description);
+} else if (id == 800) {
+System.out.println("weather contains: " + jsonobj_1.get("weather"));
+String description = (String) jsonobj_2.get("description");
+System.out.println(" Id is 800 so descrpiton is :" + description);
+}
+
+}
+
+}
+}
+
+}
